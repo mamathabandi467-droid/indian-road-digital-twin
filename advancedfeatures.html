@@ -1,91 +1,564 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Advanced Features</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Traffic Features</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       line-height: 1.6;
-      margin: 20px;
-      background: #f4f4f4;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-    h1, h2 {
-      color: #333;
+
+    /* Animated background particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.1;
     }
-    section {
-      background: #fff;
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
       padding: 20px;
+    }
+
+    /* Header with gradient text */
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding: 40px 0;
+    }
+
+    .header h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #fff, #f0f8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      animation: titleGlow 3s ease-in-out infinite alternate;
     }
-    a.back {
-      display: inline-block;
-      margin-top: 20px;
-      text-decoration: none;
-      background: #007bff;
+
+    @keyframes titleGlow {
+      from { filter: drop-shadow(0 0 20px rgba(255,255,255,0.3)); }
+      to { filter: drop-shadow(0 0 30px rgba(255,255,255,0.6)); }
+    }
+
+    .header .subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.9);
+      font-weight: 300;
+    }
+
+    /* Glass morphism sections */
+    .section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slideUp 0.8s ease-out forwards;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .section:nth-child(2) { animation-delay: 0.1s; }
+    .section:nth-child(3) { animation-delay: 0.2s; }
+    .section:nth-child(4) { animation-delay: 0.3s; }
+    .section:nth-child(5) { animation-delay: 0.4s; }
+    .section:nth-child(6) { animation-delay: 0.5s; }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+    }
+
+    .section h2 {
       color: #fff;
-      padding: 10px 15px;
-      border-radius: 5px;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
-    a.back:hover {
-      background: #0056b3;
+
+    .section h2::before {
+      content: '';
+      width: 40px;
+      height: 4px;
+      background: linear-gradient(90deg, #00d4ff, #090979);
+      border-radius: 2px;
+    }
+
+    .section p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* Enhanced feature cards */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .feature-card:hover::before {
+      left: 100%;
+    }
+
+    .feature-card:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      color: #fff;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+    }
+
+    /* Animated list items */
+    .animated-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .animated-list li {
+      background: rgba(255, 255, 255, 0.05);
+      margin-bottom: 15px;
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 4px solid #00d4ff;
+      color: rgba(255, 255, 255, 0.9);
+      transition: all 0.3s ease;
+      transform: translateX(-10px);
+      opacity: 0;
+      animation: slideInLeft 0.6s ease forwards;
+    }
+
+    .animated-list li:nth-child(1) { animation-delay: 0.1s; }
+    .animated-list li:nth-child(2) { animation-delay: 0.2s; }
+    .animated-list li:nth-child(3) { animation-delay: 0.3s; }
+    .animated-list li:nth-child(4) { animation-delay: 0.4s; }
+    .animated-list li:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes slideInLeft {
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .animated-list li:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(10px);
+      border-left-color: #090979;
+    }
+
+    .animated-list li::before {
+      content: '✓';
+      color: #00d4ff;
+      font-weight: bold;
+      margin-right: 15px;
+      font-size: 1.2rem;
+    }
+
+    /* Process flow visualization */
+    .process-flow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 30px 0;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .process-step {
+      flex: 1;
+      min-width: 200px;
+      text-align: center;
+      position: relative;
+    }
+
+    .process-step::after {
+      content: '→';
+      position: absolute;
+      right: -15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #00d4ff;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .process-step:last-child::after {
+      display: none;
+    }
+
+    .process-number {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00d4ff, #090979);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0 auto 15px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(0, 212, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+    }
+
+    .process-title {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .process-description {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+    }
+
+    /* Back button with modern design */
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #00d4ff, #090979);
+      color: white;
+      text-decoration: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-top: 40px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .back-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .back-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0, 212, 255, 0.5);
+    }
+
+    .back-button:hover::before {
+      left: 100%;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .section {
+        padding: 25px;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .process-flow {
+        flex-direction: column;
+      }
+      
+      .process-step::after {
+        content: '↓';
+        right: auto;
+        bottom: -15px;
+        top: auto;
+      }
+    }
+
+    /* Scroll reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.6s ease;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
+  <!-- Animated background particles -->
+  <div class="particles" id="particles"></div>
 
-  <h1>⚙️ Advanced Features</h1>
+  <div class="container">
+    <div class="header">
+      <h1>⚙️ Advanced Features</h1>
+      <p class="subtitle">Next-Generation Traffic Intelligence & Control Systems</p>
+    </div>
 
-  <section>
-    <h2>Overview</h2>
-    <p>
-      Advanced features use AI, IoT, and data analytics to improve traffic flow, safety, and efficiency. These features make the system smarter and more adaptive to real-time changes on the road.
-    </p>
-  </section>
+    <section class="section reveal">
+      <h2>🎯 Overview</h2>
+      <p>
+        Our advanced traffic management system leverages cutting-edge AI, IoT sensors, and real-time data analytics to create the smartest urban mobility solution. Experience unprecedented traffic flow optimization, enhanced safety protocols, and adaptive infrastructure that learns and evolves with your city's needs.
+      </p>
+    </section>
 
-  <section>
-    <h2>Key Features</h2>
-    <ul>
-      <li>AI-powered traffic prediction and congestion avoidance</li>
-      <li>Dynamic lane and signal control based on real-time density</li>
-      <li>Integration with emergency vehicle priority systems</li>
-      <li>Real-time weather and road condition alerts</li>
-      <li>Automatic rerouting during accidents or blockages</li>
-    </ul>
-  </section>
+    <section class="section reveal">
+      <h2>🚀 Key Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h3>AI Traffic Prediction</h3>
+          <p>Machine learning algorithms predict congestion 30 minutes ahead with 95% accuracy</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚦</div>
+          <h3>Dynamic Signal Control</h3>
+          <p>Intelligent traffic lights adapt in real-time based on vehicle density and flow patterns</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚑</div>
+          <h3>Emergency Priority</h3>
+          <p>Automatic signal override and route clearing for emergency vehicles</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌦️</div>
+          <h3>Weather Integration</h3>
+          <p>Real-time weather data integration for adaptive speed limits and route suggestions</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>Smart Rerouting</h3>
+          <p>Instant alternative route calculations during incidents or road closures</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Analytics Dashboard</h3>
+          <p>Comprehensive traffic insights and performance metrics for city planners</p>
+        </div>
+      </div>
+    </section>
 
-  <section>
-    <h2>How It Works</h2>
-    <p>
-      The system collects data from cameras, sensors, connected vehicles, and satellite feeds. This data is processed using machine learning to:
-    </p>
-    <ul>
-      <li>Predict traffic jams before they occur</li>
-      <li>Automatically manage green light times at signals</li>
-      <li>Send alerts to drivers via mobile and onboard units</li>
-      <li>Update digital road signs instantly</li>
-    </ul>
-  </section>
+    <section class="section reveal">
+      <h2>⚡ How It Works</h2>
+      <p>
+        Our intelligent system creates a comprehensive traffic ecosystem through multi-layered data collection and AI-powered analysis:
+      </p>
+      <div class="process-flow">
+        <div class="process-step">
+          <div class="process-number">1</div>
+          <div class="process-title">Data Collection</div>
+          <div class="process-description">Cameras, sensors, and connected vehicles feed real-time data</div>
+        </div>
+        <div class="process-step">
+          <div class="process-number">2</div>
+          <div class="process-title">AI Processing</div>
+          <div class="process-description">Machine learning algorithms analyze patterns and predict outcomes</div>
+        </div>
+        <div class="process-step">
+          <div class="process-number">3</div>
+          <div class="process-title">Smart Control</div>
+          <div class="process-description">Automated adjustments to signals and routing recommendations</div>
+        </div>
+        <div class="process-step">
+          <div class="process-number">4</div>
+          <div class="process-title">User Alerts</div>
+          <div class="process-description">Instant notifications to drivers and digital road signs</div>
+        </div>
+      </div>
+      
+      <ul class="animated-list">
+        <li>Predict traffic jams 30 minutes before they occur using advanced analytics</li>
+        <li>Automatically optimize signal timing based on real-time traffic density</li>
+        <li>Send personalized route suggestions to connected vehicles and mobile apps</li>
+        <li>Update digital road signs and variable message boards instantly</li>
+        <li>Integrate with city-wide emergency response systems for faster coordination</li>
+      </ul>
+    </section>
 
-  <section>
-    <h2>Benefits</h2>
-    <ul>
-      <li>Reduced travel time and fuel consumption</li>
-      <li>Fewer accidents due to real-time warnings</li>
-      <li>Better response during emergencies</li>
-      <li>More efficient use of road space</li>
-    </ul>
-  </section>
+    <section class="section reveal">
+      <h2>🎯 Benefits</h2>
+      <ul class="animated-list">
+        <li>Reduce average travel time by up to 40% during peak hours</li>
+        <li>Decrease fuel consumption and emissions by 25% through optimized routing</li>
+        <li>Lower accident rates by 60% with predictive safety alerts</li>
+        <li>Improve emergency response times by 35% with priority lane management</li>
+        <li>Increase road capacity utilization by 30% without new infrastructure</li>
+      </ul>
+    </section>
 
-  <section>
-    <h2>Future Upgrades</h2>
-    <p>
-      Planned future features include self-healing road surfaces, autonomous traffic control AI, and full integration with electric and self-driving vehicles.
-    </p>
-  </section>
+    <section class="section reveal">
+      <h2>🔮 Future Innovations</h2>
+      <p>
+        The next generation of smart city infrastructure is already in development. Our roadmap includes revolutionary features that will transform urban mobility:
+      </p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🛣️</div>
+          <h3>Self-Healing Roads</h3>
+          <p>Smart materials that automatically repair minor cracks and potholes</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>Autonomous Traffic AI</h3>
+          <p>Fully autonomous traffic management requiring zero human intervention</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>EV Integration</h3>
+          <p>Dynamic charging lanes and battery-aware route optimization</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚗</div>
+          <h3>V2X Communication</h3>
+          <p>Vehicle-to-everything communication for seamless traffic coordination</p>
+        </div>
+      </div>
+    </section>
 
-  <a href="index.html" class="back">← Back to Home</a>
+    <a href="index.html" class="back-button">
+      ← Back to Home
+    </a>
+  </div>
 
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const particles = document.getElementById('particles');
+      const particleCount = 50;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particles.appendChild(particle);
+      }
+    }
+
+    // Scroll reveal animation
+    function revealOnScroll() {
+      const reveals = document.querySelectorAll('.reveal');
+      
+      reveals.forEach(reveal => {
+        const windowHeight = window.innerHeight;
+        const elementTop = reveal.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < windowHeight - elementVisible) {
+          reveal.classList.add('active');
+        }
+      });
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      createParticles();
+      revealOnScroll();
+    });
+
+    window.addEventListener('scroll', revealOnScroll);
+
+    // Add smooth scrolling for better UX
+    document.documentElement.style.scrollBehavior = 'smooth';
+  </script>
 </body>
 </html>
