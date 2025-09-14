@@ -103,27 +103,65 @@
       </div>
     </div>
   </section>
-    
-        
-    
-     
-    
-   
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Live GPS Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
 
-  
-       
-         
-    
-    
-   
+<div id="map"></div>
 
- 
+<script>
+  let map, marker;
 
-    
-       
-     
-      
-    
+  function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 15,
+      center: { lat: 0, lng: 0 }
+    });
+
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition((pos) => {
+        const userPos = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        };
+        map.setCenter(userPos);
+        if (!marker) {
+          marker = new google.maps.Marker({
+            position: userPos,
+            map: map,
+            title: "You are here"
+          });
+        } else {
+          marker.setPosition(userPos);
+        }
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+</script>
+
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+</script>
+
+</body>
+</html>
     <!-- Live Application / Dashboard -->
     <section class="section reveal" id="live-dashboard">
       <h2>🔴 Live Traffic Dashboard</h2>
@@ -1065,6 +1103,7 @@
   </script>
 </body>
 </html>
+
 
 
 
