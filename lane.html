@@ -19,6 +19,32 @@
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+    #simulation {
+      border: 2px solid #333;
+      background: #ddd;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+    .car {
+      width: 40px;
+      height: 20px;
+      background: red;
+      position: absolute;
+      top: 60px;
+      left: -50px;
+      border-radius: 5px;
+      animation: move 4s linear infinite;
+    }
+    .car2 {
+      background: blue;
+      top: 120px;
+      animation-delay: 2s;
+    }
+    @keyframes move {
+      from { left: -50px; }
+      to { left: 100%; }
+    }
     a.back {
       display: inline-block;
       margin-top: 20px;
@@ -40,35 +66,42 @@
   <section>
     <h2>Overview</h2>
     <p>
-      Lane Management is a system that controls and optimizes the use of road lanes to reduce congestion and improve safety. It makes sure traffic flows smoothly by guiding vehicles into the right lanes.
+      Lane Management helps organize the movement of vehicles on multi-lane roads. It improves traffic flow, reduces accidents, and allows emergency vehicles to move faster.
     </p>
   </section>
 
   <section>
     <h2>Key Features</h2>
     <ul>
-      <li>Dynamic lane direction control during peak hours</li>
-      <li>Dedicated lanes for buses, carpools, and emergency vehicles</li>
-      <li>Real-time monitoring of each lane using sensors</li>
-      <li>Automatic detection of lane violations</li>
-      <li>Adaptive traffic signal timing based on lane usage</li>
+      <li>Dynamic lane assignment based on traffic density</li>
+      <li>Priority lanes for public transport and emergency vehicles</li>
+      <li>Real-time lane switching alerts to drivers</li>
+      <li>Smart sensors to detect lane blockages</li>
     </ul>
   </section>
 
   <section>
     <h2>How It Works</h2>
     <p>
-      The system uses cameras, sensors, and AI to watch the road. It counts vehicles in each lane, checks for violations, and can change lane directions or open special lanes when traffic gets heavy.
+      Cameras and road sensors detect vehicle speed and density. If one lane is overcrowded, the system allows vehicles to shift to another lane and updates traffic lights to balance the flow.
     </p>
+  </section>
+
+  <section>
+    <h2>Live Example</h2>
+    <p>Watch the cars moving through two lanes below. This simulates vehicles moving in lanes. As traffic increases, the system can open extra lanes or give priority to specific vehicles.</p>
+    <div id="simulation">
+      <div class="car"></div>
+      <div class="car car2"></div>
+    </div>
   </section>
 
   <section>
     <h2>Benefits</h2>
     <ul>
-      <li>Faster travel times</li>
-      <li>Less traffic congestion</li>
-      <li>Improved road safety</li>
-      <li>Efficient use of road space</li>
+      <li>Reduces traffic jams</li>
+      <li>Improves road safety</li>
+      <li>Gives faster routes to emergency vehicles</li>
     </ul>
   </section>
 
