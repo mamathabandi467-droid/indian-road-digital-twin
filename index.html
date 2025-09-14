@@ -374,6 +374,123 @@
         </div>
       </div>
     </section>
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Potholes & Barricades</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      background: #f4f4f4;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    section {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #simulation {
+      border: 2px solid #333;
+      background: #ddd;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+    .car {
+      width: 40px;
+      height: 20px;
+      background: red;
+      position: absolute;
+      top: 80px;
+      left: -50px;
+      border-radius: 5px;
+      animation: move 6s linear infinite;
+    }
+    .pothole, .barricade {
+      width: 30px;
+      height: 20px;
+      position: absolute;
+      top: 90px;
+      border-radius: 3px;
+    }
+    .pothole {
+      background: black;
+      left: 40%;
+    }
+    .barricade {
+      background: orange;
+      left: 70%;
+    }
+    @keyframes move {
+      from { left: -50px; }
+      to { left: 100%; }
+    }
+    a.back {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      background: #007bff;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 5px;
+    }
+    a.back:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🕳️ Potholes & 🚧 Barricades</h1>
+
+  <section>
+    <h2>Overview</h2>
+    <p>
+      This system detects potholes and barricades on roads to prevent damage and accidents. It warns drivers in advance and suggests safe alternate routes.
+    </p>
+  </section>
+
+  <section>
+    <h2>Key Features</h2>
+    <ul>
+      <li>Real-time pothole and barricade detection using sensors and cameras</li>
+      <li>Instant alerts to nearby vehicles</li>
+      <li>Automatic route updates to avoid damaged roads</li>
+      <li>Reports sent to road maintenance teams</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Live Example</h2>
+    <p>Watch the car moving on the road and facing potholes and barricades on its way.</p>
+    <div id="simulation">
+      <div class="car"></div>
+      <div class="pothole"></div>
+      <div class="barricade"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Benefits</h2>
+    <ul>
+      <li>Prevents accidents and tire damage</li>
+      <li>Improves road safety and comfort</li>
+      <li>Speeds up road repairs</li>
+      <li>Minimizes sudden slowdowns</li>
+    </ul>
+  </section>
+
+  <a href="index.html" class="back">← Back to Home</a>
+
+</body>
+</html>
+
     <!-- Live Application / Dashboard -->
     <section class="section reveal" id="live-dashboard">
       <h2>🔴 Live Traffic Dashboard</h2>
@@ -1262,6 +1379,7 @@
   </script>
 </body>
 </html>
+
 
 
 
