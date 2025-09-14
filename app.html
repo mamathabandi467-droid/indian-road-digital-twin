@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Indian Road Digital Twin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    nav {
+      background: #333;
+      display: flex;
+      justify-content: space-around;
+      padding: 15px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: #ffd700;
+    }
+    #content {
+      padding: 20px;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+      height: 80vh;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="lane.html" target="pageFrame">Lane Management</a>
+    <a href="construction.html" target="pageFrame">Construction Zones</a>
+    <a href="potholes.html" target="pageFrame">Potholes & Barricades</a>
+    <a href="traffic.html" target="pageFrame">Live Traffic</a>
+  </nav>
+
+  <div id="content">
+    <iframe name="pageFrame" src="lane.html"></iframe>
+  </div>
+
+</body>
+</html>
