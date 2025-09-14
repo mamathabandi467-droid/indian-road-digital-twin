@@ -4,229 +4,96 @@
   <meta charset="UTF-8">
   <title>Indian Road Digital Twin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</<link rel="stylesheet" href="style.css">
->
-      <!-- ===== Solutions Section ===== -->
-
-    <!-- Link your JavaScript file here -->
-    <script src="script.js"></script>
-</body>
-  <section id="roundabout-sim" style="text-align:center; padding:40px 0;">
-  <h2>Roundabout Traffic Simulator</h2>
-  <canvas id="roundabout" width="400" height="400" 
-          style="background:white; border:3px solid #444; border-radius:50%;"></canvas>
-</section>
-<section id="lane-management" class="module">
-  <h2>🚦 Lane Management</h2>
-  <p>
-    Our system intelligently manages individual road lanes to optimize traffic flow and ensure safety.
-  </p>
-  <ul>
-    <li>Dynamic lane direction control during peak hours</li>
-    <li>Dedicated lanes for buses, carpool, and emergency vehicles</li>
-    <li>Real-time lane occupancy monitoring</li>
-    <li>Automated detection of lane violations</li>
-    <li>Adaptive signal timing based on lane congestion</li>
-  </ul>
-</section>
-<section id="lane-management">
-  <h2>🚦 Lane Management</h2>
-  <p>
-    Our system manages road lanes to reduce traffic and improve safety.
-  </p>
-
-  <!-- This is the link -->
-  <a href="lane.html">Learn More →</a>
-</section>
-  <section id="construction-zones">
-  <h2>🚧 Construction Zones</h2>
-  <p>
-    Our system monitors active construction areas to keep traffic flowing safely around them.
-  </p>
-  <a href="construction.html">Learn More →</a>
-</section>
-
-<section id="potholes-barricades">
-  <h2>🕳️ Potholes & Barricades</h2>
-  <p>
-    Our system detects potholes and barricades to improve road safety and prevent accidents.
-  </p>
-  <a href="potholes.html">Learn More →</a>
-</section>
-
-<script>
-  const canvas = document.getElementById('roundabout');
-  if (canvas) {
-    const ctx = canvas.getContext('2d');
-    const cars = 10;
-    const radius = 140;
-    let angles = [];
-    for (let i = 0; i < cars; i++) angles.push((i * 2 * Math.PI) / cars);
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath();
-      ctx.arc(200, 200, radius, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#666';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      for (let i = 0; i < cars; i++) {
-        const x = 200 + radius * Math.cos(angles[i]);
-        const y = 200 + radius * Math.sin(angles[i]);
-        ctx.beginPath();
-        ctx.arc(x, y, 6, 0, 2 * Math.PI);
-        ctx.fillStyle = 'red';
-        ctx.fill();
-        angles[i] += 0.02;
-      }
-      requestAnimationFrame(draw);
-    }
-    draw();
-  }
-</script>
-
-</html>
+  <link rel="stylesheet" href="style.css">
+</head>
 
 <body>
+  <!-- ===== Navbar ===== -->
   <nav class="navbar navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="#">Indian Road Digital Twin</a>
     </div>
   </nav>
 
+  <!-- ===== Header ===== -->
   <header class="bg-primary text-white text-center py-5">
     <h1>Accelerating High-Fidelity Road Network Modeling</h1>
     <p>Smart India Hackathon 2025 | Problem Statement SIH25100</p>
   </header>
 
+  <!-- ===== Problem Section ===== -->
   <section class="container my-5">
     <h2>🚦 The Problem</h2>
-    <p>Urban traffic congestion in Indian cities is worsened by software that assumes ideal road conditions...</p>
+    <p>
+      Urban traffic congestion in Indian cities is worsened by software that assumes ideal road conditions...
+    </p>
   </section>
 
+  <!-- ===== Solutions Section ===== -->
+  <section id="solutions" style="padding:60px 20px; background:#f8f9fa;">
+    <div style="max-width:1000px; margin:0 auto; text-align:center;">
+      <h2 style="font-size:2.2rem; margin-bottom:10px;">Our Solutions</h2>
+      <p style="color:#555; margin-bottom:40px;">
+        We created three targeted solutions using <b>MATLAB</b> and <b>SUMO</b> simulation tools to improve road network modeling.
+      </p>
 
-<!-- ===== Solutions Section ===== -->
-<section id="solutions" style="padding:60px 20px; background:#f8f9fa;">
-  <div style="max-width:1000px; margin:0 auto; text-align:center;">
-    <h2 style="font-size:2.2rem; margin-bottom:10px;">Our Solutions</h2>
-    <p style="color:#555; margin-bottom:40px;">
-      We created three targeted solutions using <b>MATLAB</b> and <b>SUMO</b> simulation tools to improve road network modeling.
-    </p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:25px;">
+        <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+          <h3>🚗 Lane Management</h3>
+          <p style="color:#555;">We simulated lane discipline and dynamic lane allocation to reduce traffic congestion.</p>
+        </div>
 
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:25px;">
+        <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+          <h3>🚧 Construction Zones</h3>
+          <p style="color:#555;">We modeled temporary roadblocks and rerouting strategies to avoid jams during construction.</p>
+        </div>
 
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h3 style="margin-bottom:10px;">🚗 Lane Management</h3>
-        <p style="color:#555;">We simulated lane discipline and dynamic lane allocation to reduce traffic congestion.</p>
+        <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+          <h3>⚠️ Potholes & Barricades</h3>
+          <p style="color:#555;">We analyzed how obstacles affect traffic speed and safety, and planned smarter routes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Advanced Features Section ===== -->
+  <section class="container my-5">
+    <h2 class="text-center mb-4">🚀 Advanced Features</h2>
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+          <h5>📊 Real-Time Traffic Density</h5>
+          <p style="color:#555;">Analyze live traffic data to detect congestion levels instantly.</p>
+        </div>
       </div>
 
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h3 style="margin-bottom:10px;">🚧 Construction Zones</h3>
-        <p style="color:#555;">We modeled temporary roadblocks and rerouting strategies to avoid jams during construction.</p>
+      <div class="col-md-4">
+        <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+          <h5>🧭 Intelligent Navigation</h5>
+          <p style="color:#555;">Suggest the fastest routes based on live traffic conditions.</p>
+        </div>
       </div>
 
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h3 style="margin-bottom:10px;">⚠️ Potholes & Barricades</h3>
-        <p style="color:#555;">We analyzed how obstacles affect traffic speed and safety, and planned smarter routes.</p>
+      <div class="col-md-4">
+        <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+          <h5>🚑 Emergency Vehicle Prioritization</h5>
+          <p style="color:#555;">Clear routes for ambulances and emergency vehicles in real-time.</p>
+        </div>
       </div>
 
     </div>
-  </div>
-</section>
-<!-- ===== End Solutions Section ===== -->
-<!-- ===== Advanced Features Section ===== -->
-<section class="container my-5">
-  <h2 class="text-center mb-4">🚀 Advanced Features</h2>
+  </section>
 
-  <div class="row g-4">
+  <!-- ===== Roundabout Traffic Simulator ===== -->
+  <section class="container my-5 text-center">
+    <h2 class="mb-4">🚗 Roundabout Traffic Simulator</h2>
+    <canvas id="roundabout" width="400" height="400" 
+            style="border:2px solid #ccc; border-radius:50%; background:#f9f9f9;"></canvas>
+    <p class="mt-3 text-muted">Watch cars move around the roundabout!</p>
+  </section>
 
-    <div class="col-md-4">
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h5>📊 Real-Time Traffic Density Calculation</h5>
-        <p style="color:#555;">Analyze live traffic data to detect congestion levels instantly.</p>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h5>🧭 Intelligent Navigation System</h5>
-        <p style="color:#555;">Suggest the fastest routes based on live traffic conditions.</p>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h5>🚑 Emergency Vehicle Prioritization</h5>
-        <p style="color:#555;">Clear routes for ambulances and emergency vehicles in real-time.</p>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h5>⚠️ Pothole and Accident Detection</h5>
-        <p style="color:#555;">Detect road hazards to prevent accidents and improve safety.</p>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h5>🅿️ Smart Parking Space Allocation</h5>
-        <p style="color:#555;">Guide drivers to available parking spots using live data.</p>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h5>🚉 Multi-Modal Traffic Flow Simulation</h5>
-        <p style="color:#555;">Simulate cars, buses, bikes, and pedestrians together.</p>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h5>🌱 Eco-Efficiency & Emissions Analysis</h5>
-        <p style="color:#555;">Track CO₂ emissions and fuel consumption from traffic flow.</p>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h5>🔐 Traffic Data Privacy and Reliability</h5>
-        <p style="color:#555;">Ensure secure and accurate handling of traffic datasets.</p>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <h5>📣 Crowd-Sourced Incident Reporting</h5>
-        <p style="color:#555;">Let users report incidents to improve traffic awareness.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-<!-- ===== End Advanced Features Section ===== -->
-<!-- ===== Roundabout Traffic Simulator ===== -->
-<section class="container my-5 text-center">
-  <h2 class="mb-4">🚗 Roundabout Traffic Simulator</h2>
-  <canvas id="roundabout" width="400" height="400" 
-          style="border:2px solid #ccc; border-radius:50%; background:#f9f9f9;">
-  </canvas>
-  <p class="mt-3 text-muted">Watch cars move around the roundabout!</p>
-</section>
-
-<script src="script.js"></script>
+  <!-- ===== JavaScript ===== -->
+  <script src="script.js"></script>
 </body>
 </html>
-
-</<script src="script.js"></script>
->
-</html>
-
-
-
-
-
-
-
-
-
