@@ -151,6 +151,253 @@
         </div>
       </div>
     </section>
+    <!-- Live Application / Dashboard -->
+    <section class="section reveal" id="live-dashboard">
+      <h2>🔴 Live Traffic Dashboard</h2>
+      <p>
+        Interactive demo of live traffic telemetry: real-time density, average speed, lane status, and incident alerts.
+        Data here is simulated in-browser — replace the simulation with your real API / WebSocket to go live.
+      </p>
+
+      <div style="display:grid; grid-template-columns: 1fr 420px; gap:20px; align-items:start; margin-top:20px;">
+        <!-- Left: Metrics + Controls + Incident List -->
+        <div>
+          <div style="display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+            <div class="feature-card" style="flex:1; min-width:150px;">
+              <div class="feature-icon">📈</div>
+              <h3 id="metric-density">Traffic Density</h3>
+              <p id="val-density" style="font-size:1.6rem; color:#00d4ff;">—</p>
+            </div>
+
+            <div class="feature-card" style="flex:1; min-width:150px;">
+              <div class="feature-icon">⏱️</div>
+              <h3 id="metric-speed">Avg Speed</h3>
+              <p id="val-speed" style="font-size:1.6rem; color:#00d4ff;">— km/h</p>
+            </div>
+
+            <div class="feature-card" style="flex:1; min-width:150px;">
+              <div class="feature-icon">🚦</div>
+              <h3 id="metric-lanes">Lane Status</h3>
+              <p id="val-lanes" style="font-size:1.1rem; color:#00d4ff;">—</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">
+            <button id="btn-start" class="back-button" style="padding:10px 18px; border-radius:12px; font-size:0.95rem;">Start</button>
+            <button id="btn-stop" class="back-button" style="background:linear-gradient(135deg,#ff6b6b,#f06595); padding:10px 18px; border-radius:12px; font-size:0.95rem;">Stop</button>
+
+            <label style="color:rgba(255,255,255,0.9); margin-left:8px;">Speed:</label>
+            <input id="speed-range" type="range" min="200" max="2000" step="100" value="800" style="width:180px;">
+            <span id="speed-label" style="color:rgba(255,255,255,0.9); min-width:40px; display:inline-block;">800ms</span>
+          </div>
+
+          <div style="margin-top:10px;">
+            <h4 style="color:#fff; margin-bottom:8px;">Recent Incidents</h4>
+            <ul id="incident-list" style="list-style:none; padding:0; max-height:160px; overflow:auto;">
+              <!-- incidents appended here -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right: Mini-map + chart -->
+        <div>
+          <!-- SVG road with moving cars -->
+          <div style="background:rgba(0,0,0,0.05); border-radius:12px; padding:14px; margin-bottom:14px;">
+            <svg id="mini-map" width="380" height="200" viewBox="0 0 380 200" style="display:block; margin:0 auto; background:rgba(255,255,255,0.02); border-radius:8px;">
+              <!-- road background -->
+              <rect x="20" y="50" width="340" height="100" rx="20" fill="#222" opacity="0.6"></rect>
+
+              <!-- lane separators -->
+              <g stroke="#fff" stroke-width="2" stroke-dasharray="12 8" opacity="0.6">
+                <line x1="40" y1="100" x2="340" y2="100"></line>
+              </g>
+
+              <!-- lanes areas (for clickable status) -->
+              <rect id="lane-1" x="20" y="50" width="170" height="100" rx="20" fill="transparent" style="cursor:pointer;"></rect>
+              <rect id="lane-2" x="190" y="50" width="170" height="100" rx="20" fill="transparent" style="cursor:pointer;"></rect>
+
+              <!-- cars group -->
+              <g id="cars"></g>
+            </svg>
+            <p style="color:rgba(255,255,255,0.8); text-align:center; margin-top:8px; font-size:0.95rem;">Mini map: click lanes to toggle closure</p>
+          </div>
+
+          <!-- traffic density chart -->
+          <div style="background:rgba(0,0,0,0.04); border-radius:12px; padding:12px;">
+            <canvas id="density-chart" width="360" height="140" style="display:block; margin:0 auto; background:rgba(255,255,255,0.02); border-radius:8px;"></canvas>
+            <p id="chart-note" style="color:rgba(255,255,255,0.7); text-align:center; font-size:0.85rem; margin-top:6px;">Traffic density (vehicles/km) — last 30 points</p>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function() {
+          // DOM refs
+          const valDensity = document.getElementById('val-density');
+          const valSpeed = document.getElementById('val-speed');
+          const valLanes = document.getElementById('val-lanes');
+          const incidentList = document.getElementById('incident-list');
+          const btnStart = document.getElementById('btn-start');
+          const btnStop = document.getElementById('btn-stop');
+          const speedRange = document.getElementById('speed-range');
+          const speedLabel = document.getElementById('speed-label');
+          const carsGroup = document.getElementById('cars');
+          const lane1 = document.getElementById('lane-1');
+          const lane2 = document.getElementById('lane-2');
+
+          // Chart setup
+          const canvas = document.getElementById('density-chart');
+          const ctx = canvas.getContext('2d');
+          let dataPoints = Array.from({length:30}, () => 30 + Math.random()*30);
+
+          // simulation state
+          let running = false;
+          let timer = null;
+          let updateInterval = Number(speedRange.value); // ms
+          let lanesOpen = [true, true];
+
+          function drawChart() {
+            // clear
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            // grid
+            ctx.globalAlpha = 0.12;
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.6;
+            for (let y=20; y<canvas.height; y+=20) {
+              ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+            // area
+            const maxV = 100;
+            ctx.beginPath();
+            dataPoints.forEach((v,i) => {
+              const x = (i/(dataPoints.length-1))*(canvas.width-20)+10;
+              const y = canvas.height - ((v/maxV)*(canvas.height-20)+10);
+              if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            });
+            ctx.strokeStyle = '#00d4ff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // fill gradient
+            const grad = ctx.createLinearGradient(0,0,0,canvas.height);
+            grad.addColorStop(0,'rgba(0,212,255,0.12)');
+            grad.addColorStop(1,'rgba(0,212,255,0.02)');
+            ctx.lineTo(canvas.width-10, canvas.height-10);
+            ctx.lineTo(10, canvas.height-10);
+            ctx.fillStyle = grad;
+            ctx.fill();
+          }
+
+          function renderCars(density) {
+            // number of cars scales with density (cap 12)
+            const count = Math.min(12, Math.round((density/100)*12));
+            carsGroup.innerHTML = '';
+            for (let i=0;i<count;i++){
+              const car = document.createElementNS('http://www.w3.org/2000/svg','rect');
+              const lane = i%2; // alternate lanes
+              const laneY = lane===0 ? 70 : 130;
+              const xPos = 40 + ((i*37) % 280);
+              car.setAttribute('x', xPos);
+              car.setAttribute('y', laneY - 9);
+              car.setAttribute('rx', 4);
+              car.setAttribute('ry', 4);
+              car.setAttribute('width', 28);
+              car.setAttribute('height', 18);
+              car.setAttribute('fill', lanesOpen[lane] ? (lane===0 ? '#ffb86b' : '#7ef5b0') : '#6c6c6c');
+              car.setAttribute('opacity', lanesOpen[lane] ? '0.95' : '0.35');
+              carsGroup.appendChild(car);
+            }
+          }
+
+          function addIncident(text) {
+            const li = document.createElement('li');
+            li.style.background = 'rgba(255,255,255,0.03)';
+            li.style.padding = '10px';
+            li.style.marginBottom = '8px';
+            li.style.borderRadius = '8px';
+            li.style.color = 'rgba(255,255,255,0.95)';
+            li.textContent = `${new Date().toLocaleTimeString()} — ${text}`;
+            incidentList.prepend(li);
+            // keep at most 8
+            while (incidentList.children.length>8) incidentList.removeChild(incidentList.lastChild);
+          }
+
+          function updateMetrics() {
+            // generate simulated metrics
+            const last = dataPoints[dataPoints.length-1] || 30;
+            // density drift
+            let next = Math.max(5, Math.min(100, last + (Math.random()*10 - 5)));
+            // if a lane is closed, bump density moderately
+            const closedLanes = lanesOpen.filter(Boolean).length;
+            if (closedLanes < 2) next = Math.min(100, next + 8*(2-closedLanes));
+            dataPoints.push(next);
+            if (dataPoints.length>30) dataPoints.shift();
+
+            const avgSpeed = Math.max(10, Math.round(80 - (next/100)*60 + (Math.random()*6-3)));
+            const laneStatusText = lanesOpen.map((s,i) => `Lane ${i+1}: ${s ? 'Open' : 'Closed'}`).join(' • ');
+
+            // update DOM
+            valDensity.textContent = `${Math.round(next)} veh/km`;
+            valSpeed.textContent = `${avgSpeed} km/h`;
+            valLanes.textContent = laneStatusText;
+            renderCars(next);
+            drawChart();
+
+            // random chance of incident when density high
+            if (next > 70 && Math.random() < 0.18) {
+              addIncident('Minor slowdown due to an obstacle — rerouting suggested');
+            }
+            if (next > 85 && Math.random() < 0.08) {
+              addIncident('Major congestion — automatic reroute deployed');
+            }
+          }
+
+          // controls
+          btnStart.addEventListener('click', () => {
+            if (!running) {
+              running = true; startLoop();
+            }
+          });
+          btnStop.addEventListener('click', () => {
+            running = false;
+            if (timer) clearInterval(timer);
+            addIncident('Simulation paused by user');
+          });
+          speedRange.addEventListener('input', () => {
+            updateInterval = Number(speedRange.value);
+            speedLabel.textContent = `${updateInterval}ms`;
+            if (running) {
+              clearInterval(timer);
+              startLoop();
+            }
+          });
+
+          // lane click toggles
+          lane1.addEventListener('click', () => { lanesOpen[0]=!lanesOpen[0]; addIncident(`Lane 1 ${lanesOpen[0]?'reopened':'closed for maintenance'}`); });
+          lane2.addEventListener('click', () => { lanesOpen[1]=!lanesOpen[1]; addIncident(`Lane 2 ${lanesOpen[1]?'reopened':'closed for maintenance'}`); });
+
+          function startLoop() {
+            if (timer) clearInterval(timer);
+            updateMetrics(); // immediate update
+            timer = setInterval(updateMetrics, updateInterval);
+          }
+
+          // init
+          (function init() {
+            dataPoints = Array.from({length:30}, (_,i) => 25 + Math.random()*40);
+            drawChart();
+            renderCars(40);
+            valDensity.textContent = '—';
+            valSpeed.textContent = '—';
+            valLanes.textContent = 'Lane 1: Open • Lane 2: Open';
+            speedLabel.textContent = `${updateInterval}ms`;
+            // start by default
+            running = true; startLoop();
+          })();
+
+        })();
+      </script>
+    </section>
 
     <!-- Existing Future Innovations section -->
     <section class="section reveal">
@@ -792,6 +1039,7 @@
   </script>
 </body>
 </html>
+
 
 
 
