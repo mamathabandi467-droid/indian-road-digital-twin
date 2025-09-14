@@ -231,6 +231,117 @@
         </div>
       </div>
     </section>
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Construction Zones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      background: #f4f4f4;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    section {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #simulation {
+      border: 2px solid #333;
+      background: #ddd;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+    .car {
+      width: 40px;
+      height: 20px;
+      background: green;
+      position: absolute;
+      top: 60px;
+      left: -50px;
+      border-radius: 5px;
+      animation: move 5s linear infinite;
+    }
+    .barrier {
+      width: 50px;
+      height: 20px;
+      background: orange;
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      border-radius: 3px;
+    }
+    @keyframes move {
+      from { left: -50px; }
+      to { left: 100%; }
+    }
+    a.back {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      background: #007bff;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 5px;
+    }
+    a.back:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🚧 Construction Zones</h1>
+
+  <section>
+    <h2>Overview</h2>
+    <p>
+      The Construction Zones module tracks and manages roadwork areas to keep drivers safe and reduce traffic jams. It gives real-time warnings about lane closures and delays.
+    </p>
+  </section>
+
+  <section>
+    <h2>Key Features</h2>
+    <ul>
+      <li>Live detection of road construction sites</li>
+      <li>Automatic rerouting around blocked roads</li>
+      <li>Warning signs displayed on driver dashboards</li>
+      <li>Speed limit enforcement in construction areas</li>
+      <li>Worker safety zone alerts</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Live Example</h2>
+    <p>Watch how vehicles slow down when approaching a construction barrier on the road.</p>
+    <div id="simulation">
+      <div class="car"></div>
+      <div class="barrier"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Benefits</h2>
+    <ul>
+      <li>Improves safety for workers and drivers</li>
+      <li>Reduces sudden slowdowns and accidents</li>
+      <li>Keeps traffic flowing around closed lanes</li>
+      <li>Helps emergency vehicles plan safe routes</li>
+    </ul>
+  </section>
+
+  <a href="index.html" class="back">← Back to Home</a>
+
+</body>
+</html>
+
     <!-- Potholes & Barricades Section -->
     <section class="section reveal">
       <h2>🛑 Potholes & Barricades</h2>
@@ -1151,6 +1262,7 @@
   </script>
 </body>
 </html>
+
 
 
 
