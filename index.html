@@ -500,9 +500,6 @@
         })();
       </script>
     </section>
-<a href="traffic.html">Live Traffic Detector</a>
-
-<a href="gps.html" target="pageFrame">Live GPS</a>
 <!DOCTYPE html>
 <html>
 <head>
@@ -554,6 +551,8 @@
             map: map,
             title: "You are here"
           });
+        }, function (error) {
+          alert("Unable to get your location. Please enable location access.");
         });
       } else {
         alert("Geolocation not supported by your browser.");
@@ -561,13 +560,20 @@
     }
   </script>
 
-  <!-- Replace YOUR_API_KEY with your real Google Maps API key -->
   <script async
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9r4I3K164gGgiKNlNJjzx4TPjOKVbhkU&callback=initMap">
   </script>
 </body>
 </html>
 
+<a href="traffic.html">Live Traffic Detector</a>
+
+<a href="gps.html" target="pageFrame">Live GPS</a>
+
+
+  
+
+         
  
 <!DOCTYPE html>
 <html>
