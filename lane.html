@@ -1,111 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Lane Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 20px;
-      background: #f4f4f4;
+    body { margin: 0; font-family: Arial; }
+    header {
+      background: #2196F3;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 20px;
     }
-    h1, h2 {
-      color: #333;
-    }
-    section {
-      background: #fff;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    #simulation {
-      border: 2px solid #333;
-      background: #ddd;
-      height: 200px;
-      position: relative;
-      overflow: hidden;
-    }
-    .car {
-      width: 40px;
-      height: 20px;
-      background: red;
-      position: absolute;
-      top: 60px;
-      left: -50px;
-      border-radius: 5px;
-      animation: move 4s linear infinite;
-    }
-    .car2 {
-      background: blue;
-      top: 120px;
-      animation-delay: 2s;
-    }
-    @keyframes move {
-      from { left: -50px; }
-      to { left: 100%; }
-    }
-    a.back {
-      display: inline-block;
-      margin-top: 20px;
-      text-decoration: none;
-      background: #007bff;
-      color: #fff;
-      padding: 10px 15px;
-      border-radius: 5px;
-    }
-    a.back:hover {
-      background: #0056b3;
+    #map {
+      height: 90vh;
+      width: 100%;
     }
   </style>
 </head>
 <body>
+  <header>Lane Management</header>
+  <div id="map"></div>
 
-  <h1>🚦 Lane Management</h1>
+  <script>
+    let map;
 
-  <section>
-    <h2>Overview</h2>
-    <p>
-      Lane Management helps organize the movement of vehicles on multi-lane roads. It improves traffic flow, reduces accidents, and allows emergency vehicles to move faster.
-    </p>
-  </section>
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        mapTypeId: 'roadmap'
+      });
 
-  <section>
-    <h2>Key Features</h2>
-    <ul>
-      <li>Dynamic lane assignment based on traffic density</li>
-      <li>Priority lanes for public transport and emergency vehicles</li>
-      <li>Real-time lane switching alerts to drivers</li>
-      <li>Smart sensors to detect lane blockages</li>
-    </ul>
-  </section>
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          const userLocation = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          };
+          map.setCenter(userLocation);
+          new google.maps.Marker({
+            position: userLocation,
+            map: map,
+            title: "You are here"
+          });
+        }, function () {
+          alert("Please allow location access to see map.");
+        });
+      } else {
+        alert("Your browser does not support GPS.");
+      }
+    }
+  </script>
 
-  <section>
-    <h2>How It Works</h2>
-    <p>
-      Cameras and road sensors detect vehicle speed and density. If one lane is overcrowded, the system allows vehicles to shift to another lane and updates traffic lights to balance the flow.
-    </p>
-  </section>
-
-  <section>
-    <h2>Live Example</h2>
-    <p>Watch the cars moving through two lanes below. This simulates vehicles moving in lanes. As traffic increases, the system can open extra lanes or give priority to specific vehicles.</p>
-    <div id="simulation">
-      <div class="car"></div>
-      <div class="car car2"></div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Benefits</h2>
-    <ul>
-      <li>Reduces traffic jams</li>
-      <li>Improves road safety</li>
-      <li>Gives faster routes to emergency vehicles</li>
-    </ul>
-  </section>
-
-  <a href="index.html" class="back">← Back to Home</a>
-
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9r4I3K164gGgiKNlNJjzx4TPjOKVbhkU&callback=initMap">
+  </script>
 </body>
 </html>
