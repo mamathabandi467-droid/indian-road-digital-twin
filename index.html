@@ -539,7 +539,361 @@
     }
   </script>
 </body>
-</html>       
+</html>  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Driver Registration with GPS</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 6px; }
+    .form-input, .form-select {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;
+    }
+    .btn {
+      padding: 10px 20px; margin: 10px 5px; border: none;
+      border-radius: 8px; cursor: pointer;
+      background: #007bff; color: #fff; transition: background 0.3s;
+    }
+    .btn:hover { background: #0056b3; }
+    .radio-group, .checkbox-group { display: flex; gap: 10px; }
+    .radio-item, .checkbox-item {
+      padding: 8px 12px; border: 1px solid #ccc;
+      border-radius: 6px; cursor: pointer; user-select: none;
+    }
+    .radio-item.checked, .checkbox-item.checked {
+      background: #007bff; color: #fff;
+    }
+    .profile-pic-preview img {
+      max-width: 100px; border-radius: 50%; margin-top: 10px;
+    }
+    .summary {
+      padding: 15px; background: #f1f1f1; border-radius: 8px;
+    }
+    .success-message {
+      text-align: center; padding: 20px;
+      background: #d4edda; border: 1px solid #c3e6cb;
+      border-radius: 10px; color: #155724;
+      font-size: 18px; display: none;
+    }
+    #map { height: 300px; border-radius: 10px; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Driver Registration</h1>
+    <form id="registrationForm">
+      
+      <!-- Step 1 -->
+      <div id="step1" class="form-step active">
+        <div class="form-group">
+          <label for="ownerName">Full Name</label>
+          <input type="text" id="ownerName" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number</label>
+          <input type="tel" id="phoneNumber" class="form-input" placeholder="+91 XXXXX XXXXX" required pattern="(\+91)?[0-9]{10}">
+        </div>
+        <button type="button" class="btn" onclick="nextStep(1)">Next</button>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="step2" class="form-step">
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <div class="radio-group">
+            <div class="radio-item" onclick="selectGender('male', this)">Male
+              <input type="radio" id="male" name="gender" value="Male" hidden>
+            </div>
+            <div class="radio-item" onclick="selectGender('female', this)">Female
+              <input type="radio" id="female" name="gender" value="Female" hidden>
+            </div>
+            <div class="radio-item" onclick="selectGender('other', this)">Other
+              <input type="radio" id="other" name="gender" value="Other" hidden>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn" onclick="prevStep(2)">Back</button>
+        <button type="button" class="btn" onclick="nextStep(2)">Next</button>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="step3" class="form-step">
+        <div class="form-group">
+          <label for="email">Email (optional)</label>
+          <input type="email" id="email" class="form-input">
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="state">State</label>
+          <input type="text" id="state" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn" onclick="getLocation()">📍 Use My GPS Location</button>
+          <p id="locationStatus" style="color:#555; font-size:14px;"></p>
+        </div>
+        <div id="map"></div>
+        <button type="button" class="btn" onclick="prevStep(3)">Back</button>
+        <button type="button" class="btn" onclick="nextStep(3)">Next</button>
+      </div>
+
+      <!-- Step 4 -->
+      <div id="step4" class="form-step">
+        <div class="form-group">
+          <label for="drivingExperience">Years of Driving Experience</label>
+          <input type="number" id="drivingExperience" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Vehicle Types</label>
+          <div class="checkbox-group">
+            <div class="checkbox-item" onclick="toggleCheckbox('car', this)">Car
+              <input type="checkbox" id="car" name="vehicleType" value="car" hidden>
+            </div>
+            <div class="checkbox-item" onclick="toggleCheckbox('bike', this)">Bike
+              <input type="checkbox" id="bike" name="vehicleType" value="bike" hidden>
+            </div>
+            <div class="checkbox-item" onclick="toggleCheckbox('truck', this)">Truck
+              <input type="checkbox" id="truck" name="vehicleType" value="truck" hidden>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" id="vehicleNumberInputs"></div>
+        <div class="form-group">
+          <label for="profilePic">Profile Picture</label>
+          <input type="file" id="profilePic" class="form-input" accept="image/*" onchange="previewProfilePic(this)">
+          <div class="profile-pic-preview"></div>
+        </div>
+        <button type="button" class="btn" onclick="prevStep(4)">Back</button>
+        <button type="button" class="btn" onclick="nextStep(4)">Next</button>
+      </div>
+
+      <!-- Step 5 -->
+      <div id="step5" class="form-step">
+        <h2>Summary</h2>
+        <div id="profileSummary" class="summary"></div>
+        <button type="button" class="btn" onclick="prevStep(5)">Back</button>
+        <button type="submit" class="btn">Submit</button>
+      </div>
+    </form>
+    
+    <div id="successMessage" class="success-message">
+      🎉 Registration Successful! Redirecting...
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+    let map, userMarker;
+
+    // Example hazard points (normally from a backend)
+    const hazards = [
+      { lat: 12.9716, lon: 77.5946, type: "Pothole" },
+      { lat: 12.9750, lon: 77.5920, type: "Construction Zone" },
+      { lat: 12.9690, lon: 77.6000, type: "Barricade" }
+    ];
+
+    function nextStep(step) {
+      if (validateStep(step)) {
+        document.getElementById(`step${step}`).classList.remove('active');
+        currentStep++;
+        document.getElementById(`step${currentStep}`).classList.add('active');
+        if (currentStep === 5) generateSummary();
+      }
+    }
+
+    function prevStep(step) {
+      document.getElementById(`step${step}`).classList.remove('active');
+      currentStep--;
+      document.getElementById(`step${currentStep}`).classList.add('active');
+    }
+
+    function validateStep(step) {
+      const inputs = document.querySelectorAll(`#step${step} .form-input[required]`);
+      for (let input of inputs) {
+        if (!input.value.trim()) {
+          alert("Please fill all required fields");
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function selectGender(gender, element) {
+      document.querySelectorAll('.radio-item').forEach(item => item.classList.remove('checked'));
+      element.classList.add('checked');
+      document.getElementById(gender).checked = true;
+    }
+
+    function toggleCheckbox(type, element) {
+      element.classList.toggle('checked');
+      const checkbox = document.getElementById(type);
+      checkbox.checked = !checkbox.checked;
+      handleVehicleNumberInputs();
+    }
+
+    function handleVehicleNumberInputs() {
+      const container = document.getElementById('vehicleNumberInputs');
+      container.innerHTML = '';
+      document.querySelectorAll('input[name="vehicleType"]:checked').forEach(cb => {
+        const div = document.createElement('div');
+        div.className = 'form-group';
+        div.innerHTML = `<label for="${cb.value}Number">${cb.value.toUpperCase()} Number</label>
+                         <input type="text" id="${cb.value}Number" class="form-input" required>`;
+        container.appendChild(div);
+      });
+    }
+
+    function previewProfilePic(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.querySelector('.profile-pic-preview').innerHTML = `<img src="${e.target.result}" alt="Profile Picture">`;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function generateSummary() {
+      const name = document.getElementById('ownerName').value;
+      const phone = document.getElementById('phoneNumber').value;
+      const age = document.getElementById('age').value;
+      const gender = document.querySelector('input[name="gender"]:checked')?.value;
+      const email = document.getElementById('email').value || 'Not provided';
+      const city = document.getElementById('city').value;
+      const state = document.getElementById('state').value;
+      const experience = document.getElementById('drivingExperience').value || 'Not provided';
+
+      const selectedVehicles = Array.from(document.querySelectorAll('input[name="vehicleType"]:checked'))
+        .map(cb => {
+          const type = cb.value;
+          const number = document.getElementById(type + 'Number')?.value || 'Not provided';
+          return `${type.charAt(0).toUpperCase() + type.slice(1)}: ${number}`;
+        });
+
+      const summaryHTML = `
+        <div><strong>Name:</strong> ${name}</div>
+        <div><strong>Phone:</strong> ${phone}</div>
+        <div><strong>Age:</strong> ${age} years</div>
+        <div><strong>Gender:</strong> ${gender}</div>
+        <div><strong>Email:</strong> ${email}</div>
+        <div><strong>Location:</strong> ${city}, ${state}</div>
+        <div><strong>Experience:</strong> ${experience} years</div>
+        <div><strong>Vehicles:</strong> ${selectedVehicles.join(', ')}</div>
+      `;
+      document.getElementById('profileSummary').innerHTML = summaryHTML;
+    }
+
+    // GPS + Map
+    function getLocation() {
+      const status = document.getElementById("locationStatus");
+
+      if (navigator.geolocation) {
+        status.textContent = "📡 Fetching your GPS location...";
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        status.textContent = "❌ Geolocation not supported by your browser.";
+      }
+    }
+
+    function showPosition(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      // Autofill city/state
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+        .then(res => res.json())
+        .then(data => {
+          const city = data.address.city || data.address.town || data.address.village || "Unknown";
+          const state = data.address.state || "Unknown";
+          document.getElementById("city").value = city;
+          document.getElementById("state").value = state;
+          document.getElementById("locationStatus").textContent = `✅ Location found: ${city}, ${state}`;
+        });
+
+      // Initialize or update the map
+      if (!map) {
+        map = L.map("map").setView([lat, lon], 14);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+      }
+
+      if (userMarker) {
+        userMarker.setLatLng([lat, lon]);
+      } else {
+        userMarker = L.marker([lat, lon]).addTo(map).bindPopup("You are here").openPopup();
+      }
+
+      // Add hazard markers
+      hazards.forEach(h => {
+        L.marker([h.lat, h.lon], { icon: L.icon({
+            iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854866.png",
+            iconSize: [25, 25]
+        })})
+        .addTo(map)
+        .bindPopup(`⚠️ ${h.type}`);
+      });
+    }
+
+    function showError(error) {
+      const status = document.getElementById("locationStatus");
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          status.textContent = "❌ User denied location access.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          status.textContent = "⚠️ Location unavailable.";
+          break;
+        case error.TIMEOUT:
+          status.textContent = "⏳ Location request timed out.";
+          break;
+        default:
+          status.textContent = "❓ An unknown error occurred.";
+      }
+    }
+
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('registrationForm').style.display = 'none';
+      const success = document.getElementById('successMessage');
+      success.style.display = 'block';
+      setTimeout(() => {
+        window.location.href = 'https://mamathabandi467-droid.github.io/indian-road-digital-twin/';
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
+
     <!-- Live Application / Dashboard -->
     <section class="section reveal" id="live-dashboard">
       <h2>🔴 Live Traffic Dashboard</h2>
@@ -949,6 +1303,7 @@
  
         
     
+
 
 
 
