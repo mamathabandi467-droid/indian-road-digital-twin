@@ -1095,7 +1095,809 @@
         document.getElementById('phoneNumber').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Simulation - Setup Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .app-container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            min-height: 90vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem 1.5rem 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .app-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 2rem 1.5rem;
+            max-height: calc(90vh - 200px);
+            overflow-y: auto;
+        }
+
+        .welcome-screen, .edit-screen {
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 0.5rem;
+        }
+
+        .step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .vehicle-section {
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+        }
+
+        .vehicle-header {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fff;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.1);
+            accent-color: #667eea;
+        }
+
+        .checkbox-item.checked {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .vehicle-number-input {
+            margin-top: 0.5rem;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .vehicle-number-input.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gender-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fff;
+            font-size: 0.9rem;
+        }
+
+        .radio-item:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .radio-item input[type="radio"] {
+            margin-right: 8px;
+            accent-color: #667eea;
+        }
+
+        .radio-item.checked {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .profile-pic-section {
+            text-align: center;
+        }
+
+        .profile-pic-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+
+        .profile-pic-preview:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .profile-pic-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: block;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e1e8ed;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e1e8ed;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .profile-summary {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="app-icon">🚦</div>
+            <h1 class="app-title">Traffic Sim</h1>
+            <p class="app-subtitle">Smart Traffic Simulation</p>
+        </div>
+
+        <!-- Welcome Screen (First Time Users) -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <h2 style="margin-bottom: 1rem; color: #333;">Welcome!</h2>
+            <p style="color: #666; margin-bottom: 2rem;">Let's set up your profile to get started with personalized traffic simulation experience.</p>
+            <button class="btn btn-primary" onclick="startRegistration()">Get Started</button>
+        </div>
+
+        <!-- Registration Form -->
+        <div id="registrationForm" class="hidden">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            
+            <div class="form-container">
+                <!-- Step 1: Personal Details -->
+                <div id="step1" class="form-step">
+                    <div class="step-indicator">
+                        <div class="step active"></div>
+                        <div class="step"></div>
+                        <div class="step"></div>
+                        <div class="step"></div>
+                    </div>
+                    
+                    <h3 style="margin-bottom: 1.5rem; color: #333; text-align: center;">Personal Information</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Full Name <span class="required">*</span></label>
+                        <input type="text" id="ownerName" class="form-input" placeholder="Enter your full name" required>
+                        <div class="error-message" id="ownerNameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="phoneNumber" class="form-input" placeholder="+91 XXXXX XXXXX" required>
+                        <div class="error-message" id="phoneNumberError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Age <span class="required">*</span></label>
+                        <input type="number" id="age" class="form-input" placeholder="Enter your age" min="18" max="100" required>
+                        <div class="error-message" id="ageError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Gender <span class="required">*</span></label>
+                        <div class="gender-group">
+                            <div class="radio-item" onclick="selectGender('male')">
+                                <input type="radio" id="male" name="gender" value="male">
+                                <label>👨 Male</label>
+                            </div>
+                            <div class="radio-item" onclick="selectGender('female')">
+                                <input type="radio" id="female" name="gender" value="female">
+                                <label>👩 Female</label>
+                            </div>
+                            <div class="radio-item" onclick="selectGender('other')">
+                                <input type="radio" id="other" name="gender" value="other">
+                                <label>🧑 Other</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="genderError"></div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="nextStep(1)">Continue</button>
+                </div>
+
+                <!-- Step 2: Additional Details -->
+                <div id="step2" class="form-step hidden">
+                    <div class="step-indicator">
+                        <div class="step active"></div>
+                        <div class="step active"></div>
+                        <div class="step"></div>
+                        <div class="step"></div>
+                    </div>
+                    
+                    <h3 style="margin-bottom: 1.5rem; color: #333; text-align: center;">Additional Details</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="your.email@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">City <span class="required">*</span></label>
+                        <input type="text" id="city" class="form-input" placeholder="Enter your city" required>
+                        <div class="error-message" id="cityError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">State <span class="required">*</span></label>
+                        <input type="text" id="state" class="form-input" placeholder="Enter your state" required>
+                        <div class="error-message" id="stateError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Driving Experience (Years)</label>
+                        <input type="number" id="drivingExperience" class="form-input" placeholder="Years of driving experience" min="0" max="50">
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-secondary" onclick="prevStep(2)" style="width: 30%;">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep(2)" style="width: 70%;">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Vehicle Information -->
+                <div id="step3" class="form-step hidden">
+                    <div class="step-indicator">
+                        <div class="step active"></div>
+                        <div class="step active"></div>
+                        <div class="step active"></div>
+                        <div class="step"></div>
+                    </div>
+                    
+                    <h3 style="margin-bottom: 1.5rem; color: #333; text-align: center;">Vehicle Information</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Select Your Vehicle(s) <span class="required">*</span></label>
+                        
+                        <div class="vehicle-section">
+                            <div class="vehicle-header">
+                                🏍 Two Wheeler
+                            </div>
+                            <div class="checkbox-group" style="grid-template-columns: 1fr;">
+                                <div class="checkbox-item" onclick="toggleVehicle('bike')">
+                                    <input type="checkbox" id="bike" name="vehicleType" value="bike">
+                                    <label>Bike/Scooter</label>
+                                </div>
+                            </div>
+                            <div class="vehicle-number-input" id="bikeNumberSection">
+                                <input type="text" id="bikeNumber" class="form-input" placeholder="Enter bike registration number (e.g., AP29XX1234)">
+                            </div>
+                        </div>
+
+                        <div class="vehicle-section">
+                            <div class="vehicle-header">
+                                🚗 Four Wheeler
+                            </div>
+                            <div class="checkbox-group" style="grid-template-columns: 1fr;">
+                                <div class="checkbox-item" onclick="toggleVehicle('car')">
+                                    <input type="checkbox" id="car" name="vehicleType" value="car">
+                                    <label>Car</label>
+                                </div>
+                            </div>
+                            <div class="vehicle-number-input" id="carNumberSection">
+                                <input type="text" id="carNumber" class="form-input" placeholder="Enter car registration number (e.g., AP29XX1234)">
+                            </div>
+                        </div>
+
+                        <div class="vehicle-section">
+                            <div class="vehicle-header">
+                                🚚 Commercial Vehicle
+                            </div>
+                            <div class="checkbox-group" style="grid-template-columns: 1fr;">
+                                <div class="checkbox-item" onclick="toggleVehicle('sixWheeler')">
+                                    <input type="checkbox" id="sixWheeler" name="vehicleType" value="sixWheeler">
+                                    <label>6 Wheeler/Truck</label>
+                                </div>
+                            </div>
+                            <div class="vehicle-number-input" id="sixWheelerNumberSection">
+                                <input type="text" id="sixWheelerNumber" class="form-input" placeholder="Enter vehicle registration number">
+                            </div>
+                        </div>
+
+                        <div class="vehicle-section">
+                            <div class="vehicle-header">
+                                🚐 Others
+                            </div>
+                            <div class="checkbox-group" style="grid-template-columns: 1fr;">
+                                <div class="checkbox-item" onclick="toggleVehicle('others')">
+                                    <input type="checkbox" id="others" name="vehicleType" value="others">
+                                    <label>Auto/Bus/Other</label>
+                                </div>
+                            </div>
+                            <div class="vehicle-number-input" id="othersNumberSection">
+                                <input type="text" id="othersNumber" class="form-input" placeholder="Enter vehicle registration number">
+                                <input type="text" id="othersType" class="form-input" placeholder="Specify vehicle type" style="margin-top: 0.5rem;">
+                            </div>
+                        </div>
+                        
+                        <div class="error-message" id="vehicleError"></div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-secondary" onclick="prevStep(3)" style="width: 30%;">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep(3)" style="width: 70%;">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Profile Picture & Confirmation -->
+                <div id="step4" class="form-step hidden">
+                    <div class="step-indicator">
+                        <div class="step active"></div>
+                        <div class="step active"></div>
+                        <div class="step active"></div>
+                        <div class="step active"></div>
+                    </div>
+                    
+                    <h3 style="margin-bottom: 1.5rem; color: #333; text-align: center;">Profile Picture & Review</h3>
+                    
+                    <div class="form-group profile-pic-section">
+                        <label class="form-label">Profile Picture (Optional)</label>
+                        <div class="profile-pic-preview" onclick="document.getElementById('profilePic').click()">
+                            <div id="profilePicPlaceholder">
+                                📷<br>
+                                <small>Tap to add photo</small>
+                            </div>
+                        </div>
+                        <input type="file" id="profilePic" class="file-input" accept="image/*" onchange="previewProfilePic(this)">
+                    </div>
+
+                    <div class="profile-summary" id="profileSummary">
+                        <!-- Summary will be populated by JavaScript -->
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-secondary" onclick="prevStep(4)" style="width: 30%;">Back</button>
+                        <button class="btn btn-primary" onclick="completeRegistration()" style="width: 70%;">Complete Setup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Dashboard (Returning Users) -->
+        <div id="userDashboard" class="hidden">
+            <div class="edit-screen">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: #f0f4ff; display: flex; align-items: center; justify-content: center; font-size: 2rem;" id="dashboardProfilePic">
+                        👤
+                    </div>
+                    <div style="text-align: left;">
+                        <h2 style="color: #333; margin-bottom: 0.5rem;" id="dashboardName">Welcome Back!</h2>
+                        <p style="color: #666;" id="dashboardVehicles"></p>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="startSimulation()" style="margin-bottom: 1rem;">
+                    🚦 Start Traffic Simulation
+                </button>
+                
+                <button class="btn btn-secondary" onclick="editProfile()">
+                    ✏ Edit Profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let userData = {};
+
+        // Check if user data exists
+        function checkExistingUser() {
+            const savedData = getUserData();
+            if (savedData && savedData.isComplete) {
+                showDashboard(savedData);
+            } else {
+                document.getElementById('welcomeScreen').classList.remove('hidden');
+            }
+        }
+
+        function getUserData() {
+            // In a real app, this would be stored securely
+            return JSON.parse(localStorage.getItem('trafficSimUserData') || 'null');
+        }
+
+        function saveUserData(data) {
+            localStorage.setItem('trafficSimUserData', JSON.stringify(data));
+        }
+
+        function startRegistration() {
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('registrationForm').classList.remove('hidden');
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = (currentStep / 4) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function nextStep(step) {
+            if (validateStep(step)) {
+                document.getElementById(step${step}).classList.add('hidden');
+                currentStep++;
+                document.getElementById(step${currentStep}).classList.remove('hidden');
+                document.getElementById(step${currentStep}).classList.add('fade-in');
+                updateProgress();
+                
+                if (currentStep === 4) {
+                    generateSummary();
+                }
+            }
+        }
+
+        function prevStep(step) {
+            document.getElementById(step${step}).classList.add('hidden');
+            currentStep--;
+            document.getElementById(step${currentStep}).classList.remove('hidden');
+            updateProgress();
+        }
+
+        function validateStep(step) {
+            const errors = {};
+            
+            if (step === 1) {
+                const name = document.getElementById('ownerName').value.trim();
+                const phone = document.getElementById('phoneNumber').value.trim();
+                const age = document.getElementById('age').value;
+                const gender = document.querySelector('input[name="gender"]:checked');
+
+                if (!name) errors.ownerName = 'Name is required';
+                if (!phone || phone.length < 10) errors.phoneNumber = 'Valid phone number is required';
+                if (!age || age < 18) errors.age = 'Must be at least 18 years old';
+                if (!gender) errors.gender = 'Gender selection is required';
+            }
+            
+            if (step === 2) {
+                const city = document.getElementById('city').value.trim();
+                const state = document.getElementById('state').value.trim();
+                
+                if (!city) errors.city = 'City is required';
+                if (!state) errors.state = 'State is required';
+            }
+            
+            if (step === 3) {
+                const selectedVehicles = document.querySelectorAll('input[name="vehicleType"]:checked');
+                if (selectedVehicles.length === 0) {
+                    errors.vehicle = 'Please select at least one vehicle';
+                }
+            }
+
+            // Display errors
+            Object.keys(errors).forEach(field => {
+                const errorElement = document.getElementById(field + 'Error');
+                const inputElement = document.getElementById(field === 'vehicle' ? 'bike' : field);
+                
+                if (errorElement) {
+                    errorElement.textContent = errors[field];
+                }
+                if (inputElement) {
+                    inputElement.classList.add('error');
+                }
+            });
+
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => {
+                if (!errors[el.id.replace('Error', '')]) {
+                    el.textContent = '';
+                }
+            });
+            
+            document.querySelectorAll('.form-input').forEach(el => {
+                if (!errors[el.id]) {
+                    el.classList.remove('error');
+                }
+            });
+
+            return Object.keys(errors).length === 0;
+        }
+
+        function selectGender(gender) {
+            document.querySelectorAll('.radio-item').forEach(item => {
+                item.classList.remove('checked');
+            });
+            event.currentTarget.classList.add('checked');
+            document.getElementById(gender).checked = true;
+        }
+
+        function toggleVehicle(vehicleType) {
+            const checkbox = document.getElementById(vehicleType);
+            const numberSection = document.getElementById(vehicleType + 'NumberSection');
+            
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                checkbox.parentElement.classList.add('checked');
+                numberSection.classList.add('show');
+            } else {
+                checkbox.parentElement.classList.remove('checked');
+                numberSection.classList.remove('show');
+            }
+        }
+
+        function previewProfilePic(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.querySelector('.profile-pic-preview');
+                    preview.innerHTML = <img src="${e.target.result}" alt="Profile Picture">;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function generateSummary() {
+            const name = document.getElementById('ownerName').value;
+            const phone = document.getElementById('phoneNumber').value;
+            const age = document.getElementById('age').value;
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+            const email = document.getElementById('email').value || 'Not provided';
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const experience = document.getElementById('drivingExperience').value || 'Not provided';
+            
+            const selectedVehicles = Array.from(document.querySelectorAll('input[name="vehicleType"]:checked'))
+                .map(cb => {
+                    const type = cb.value;
+                    const number = document.getElementById(type + 'Number')?.value || 'Not provided';
+                    return ${type.charAt(0).toUpperCase() + type.slice(1)}: ${number};
+                });
+
+            const summaryHTML = `
+                <div class="summary-item"><strong>Name:</strong> <span>${name}</span></div>
+                <div class="summary-item"><strong>Phone:</strong> <span>${phone}</span></div>
+                <div class="summary-item"><strong>Age:</strong> <span>${age} years</span></div>
+                <div class="summary-item"><strong>Gender:</strong> <span>${gender}</span></div>
+                <div class="summary-item"><strong>Email:</strong> <span>${email}</span></div>
+                <div class="summary-item"><strong>Location:</strong> <span>${city}, ${state}</span></div>
+                <div class="summary-item"><strong>Experience:</strong> <span>${experience} years</span></div>
+                <div class="summary-item"><strong>Vehicles:</strong> <span>${selectedVehicles.join(', ')}</span></div>
+            `;
+            
+            document.getElementById('profileSummary').innerHTML = summaryHTML;
+        }
+
+        function completeRegistration() {
+            // Collect all form data
+            userData = {
+                name: document.getElementById('ownerName').value,
+                phone: document.getElementById('phoneNumber').value,
+                age: document.getElementById('age').value,
+                gender: document.querySelector('input[name="gender"]:checked')?.value,
+                email: document.getElementById('email').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                drivingExperience: document.getElementById('drivingExperience').value,
+                vehicles: Array.from(document.querySelectorAll('input[name="vehicleType"]:checked')).map(cb => ({
+                    type: cb.value,
+                    number: document.getElementById(cb.value + 'Number')?.value,
+                    customType:
     <!-- Live Application / Dashboard -->
     <section class="section reveal" id="live-dashboard">
       <h2>🔴 Live Traffic Dashboard</h2>
@@ -1505,6 +2307,7 @@
  
         
     
+
 
 
 
