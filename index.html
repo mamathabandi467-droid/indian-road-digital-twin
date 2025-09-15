@@ -162,6 +162,97 @@
 
 </body>
 </html>
+  <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Lane Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
+    header {
+      background: #2196F3;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+    }
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .lane {
+      width: 300px;
+      height: 400px;
+      border: 3px solid #333;
+      background: #ddd;
+      position: relative;
+      overflow: hidden;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+    .car {
+      width: 40px;
+      height: 60px;
+      background: red;
+      position: absolute;
+      bottom: 10px;
+      left: 130px;
+      border-radius: 5px;
+      transition: left 0.2s;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>Lane Management</header>
+  <div id="app">
+    <p>Use the buttons to change lanes (like a simple lane simulator)</p>
+    <div class="lane">
+      <div class="car" id="car"></div>
+    </div>
+    <div>
+      <button onclick="moveLeft()">Left</button>
+      <button onclick="moveRight()">Right</button>
+    </div>
+  </div>
+
+  <script>
+    let car = document.getElementById('car');
+    let carPosition = 130; // middle lane
+
+    function moveLeft() {
+      if (carPosition > 50) {
+        carPosition -= 80;
+        car.style.left = carPosition + 'px';
+      }
+    }
+
+    function moveRight() {
+      if (carPosition < 210) {
+        carPosition += 80;
+        car.style.left = carPosition + 'px';
+      }
+    }
+  </script>
+</body>
+</html>
+
     <!-- Live Application / Dashboard -->
     <section class="section reveal" id="live-dashboard">
       <h2>🔴 Live Traffic Dashboard</h2>
@@ -477,6 +568,7 @@
  
         
     
+
 
 
 
