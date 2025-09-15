@@ -587,44 +587,7 @@
   </style>
 </head>
 <body>
-  <header>Lane Management</header>
-  <div id="map"></div>
-
-  <script>
-    let map;
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 16,
-        mapTypeId: 'roadmap'
-      });
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (pos) {
-          const userLocation = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-          };
-          map.setCenter(userLocation);
-          new google.maps.Marker({
-            position: userLocation,
-            map: map,
-            title: "You are here"
-          });
-        }, function () {
-          alert("Please allow location access to see map.");
-        });
-      } else {
-        alert("Your browser does not support GPS.");
-      }
-    }
-  </script>
-
-  <script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9r4I3K164gGgiKNlNJjzx4TPjOKVbhkU&callback=initMap">
-  </script>
-</body>
-</html>
+ 
 
 
 <a href="traffic.html">Live Traffic Detector</a>
@@ -699,6 +662,7 @@
  
         
     
+
 
 
 
